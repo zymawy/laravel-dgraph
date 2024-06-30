@@ -2,7 +2,6 @@
 
 namespace Zymawy\Dgraph;
 
-
 use Zymawy\Dgraph\Api\Mutation;
 use Zymawy\Dgraph\Api\Operation;
 use Zymawy\Dgraph\Api\Query;
@@ -11,11 +10,10 @@ use Zymawy\Dgraph\Contracts\ApiContract;
 final class Dgraph
 {
     use \Illuminate\Support\Traits\ForwardsCalls;
+
     protected ?ApiContract $delegateTo = null;
 
-    public function __construct(protected DgraphClient $client)
-    {}
-
+    public function __construct(protected DgraphClient $client) {}
 
     /**
      * @return $this|Operation|ApiContract
@@ -23,29 +21,31 @@ final class Dgraph
     public function operation(): self
     {
         $this->delegateTo = new Operation();
+
         return $this;
     }
 
-
-//    public function query(Query $query): DgraphResponse
-//    {
-//        return $this->client->query($query->build());
-//    }
+    //    public function query(Query $query): DgraphResponse
+    //    {
+    //        return $this->client->query($query->build());
+    //    }
 
     public function executeQuery(): self
     {
         $this->delegateTo = new Query();
+
         return $this;
     }
 
-//    public function mutate(Mutation $mutation): DgraphResponse
-//    {
-//        return $this->client->mutate($mutation);
-//    }
+    //    public function mutate(Mutation $mutation): DgraphResponse
+    //    {
+    //        return $this->client->mutate($mutation);
+    //    }
 
     public function executeMutation(): self
     {
         $this->delegateTo = new Mutation();
+
         return $this;
     }
 
@@ -68,6 +68,5 @@ final class Dgraph
         }
 
         throw new \BadMethodCallException("Method {$method} does not exist.");
-
     }
 }

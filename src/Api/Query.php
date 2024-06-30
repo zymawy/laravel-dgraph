@@ -2,25 +2,28 @@
 
 namespace Zymawy\Dgraph\Api;
 
-use Zymawy\Dgraph\Contracts\ApiContract;
 use Zymawy\Dgraph\Facades\Dgraph;
 use Zymawy\Dgraph\Responses\DgraphResponse;
 
 class Query extends ApiBase
 {
     protected string $root = 'all'; // Default root value
+
     protected string $fields = '';
+
     protected array $conditions = [];
 
     public function setRoot(string $root): self
     {
         $this->root = $root;
+
         return $this;
     }
 
     public function select(string $fields): self
     {
         $this->fields = $fields;
+
         return $this;
     }
 
@@ -32,6 +35,7 @@ class Query extends ApiBase
             $operator = $this->convertOperator($operator);
             $this->conditions[] = "$operator($field, $value)";
         }
+
         return $this;
     }
 
@@ -53,8 +57,9 @@ class Query extends ApiBase
         $filter = implode(' AND ', $this->conditions);
         $fields = $this->fields ? $this->fields : 'uid';
         $query = "query { {$this->root}(func: {$filter}) { {$fields} } }";
-//        dd($query);
-//        $query = "query { {$this->root}(func: type(Person)) @filter({$filter}) { {$this->fields} } }";
+
+        //        dd($query);
+        //        $query = "query { {$this->root}(func: type(Person)) @filter({$filter}) { {$this->fields} } }";
         return $query;
     }
 

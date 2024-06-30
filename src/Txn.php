@@ -9,15 +9,18 @@ use Zymawy\Dgraph\Responses\DgraphResponse;
 class Txn
 {
     protected DgraphClient $client;
+
     protected bool $finished = false;
+
     protected bool $mutated = false;
+
     protected array $context;
 
     public function __construct(DgraphClient $client, array $options = [])
     {
         $this->client = $client;
 
-        if (isset($options['bestEffort']) && $options['bestEffort'] && !isset($options['readOnly'])) {
+        if (isset($options['bestEffort']) && $options['bestEffort'] && ! isset($options['readOnly'])) {
             throw new DgraphException(ErrorConstants::ERR_BEST_EFFORT_REQUIRED_READ_ONLY);
         }
 
@@ -61,6 +64,7 @@ class Txn
         }
 
         $this->mergeContext($response->getData()['extensions']['txn'] ?? []);
+
         return $response;
     }
 
@@ -72,14 +76,14 @@ class Txn
 
         $this->finished = true;
 
-        if (!$this->mutated) {
+        if (! $this->mutated) {
             return new DgraphResponse(['code' => 400, 'status' => 'No mutations to commit']);
         }
 
         try {
             return $this->client->commit();
         } catch (\Exception $e) {
-            throw new DgraphException("Transaction commit failed: " . $e->getMessage());
+            throw new DgraphException('Transaction commit failed: '.$e->getMessage());
         }
     }
 
@@ -91,11 +95,12 @@ class Txn
 
         $this->finished = true;
 
-        if (!$this->mutated) {
+        if (! $this->mutated) {
             return new DgraphResponse(['code' => 400, 'status' => 'No mutations to discard']);
         }
 
         $this->context['aborted'] = true;
+
         return $this->client->abort();
     }
 
@@ -110,7 +115,7 @@ class Txn
         if ($this->context['start_ts'] === 0) {
             $this->context['start_ts'] = $src['start_ts'];
         } elseif ($this->context['start_ts'] !== $src['start_ts']) {
-            throw new DgraphException("StartTs mismatch");
+            throw new DgraphException('StartTs mismatch');
         }
 
         if (isset($src['keys'])) {

@@ -14,16 +14,18 @@ class DgraphResponse
     public function getData(): array
     {
         if (is_array($this->response)) {
-            return  $this->response;
+            return $this->response;
         }
 
         return json_decode($this->response->getBody(), true);
     }
 
-    public function isSuccess() {
+    public function isSuccess()
+    {
         if (is_array($this->response)) {
-            return  ($this->response['code'] ?? 400 === 200);
+            return $this->response['code'] ?? 400 === 200;
         }
+
         return $this->response->getStatusCode() === 200 &&
             ! isset($this->data['errors']);
     }

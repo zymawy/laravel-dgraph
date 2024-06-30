@@ -18,18 +18,21 @@ class Operation extends ApiBase
     public function addField(string $name, \Zymawy\Dgraph\Contracts\TypeContract $type): self
     {
         $this->schemaBuilder->addField($name, $type);
+
         return $this;
     }
 
     public function addType(string $typeName, array $fields): self
     {
         $this->schemaBuilder->addType($typeName, $fields);
+
         return $this;
     }
 
     public function setSchema(string $schema): self
     {
         $this->schemaBuilder->setSchema($schema);
+
         return $this;
     }
 

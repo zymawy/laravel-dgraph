@@ -2,12 +2,12 @@
 
 namespace Zymawy\Dgraph\Builders;
 
-
 use Zymawy\Dgraph\Contracts\TypeContract;
 
 class SchemaBuilder
 {
     protected array $fields = [];
+
     protected array $types = [];
 
     public function addField(string $name, TypeContract $type): void
@@ -26,6 +26,7 @@ class SchemaBuilder
     {
         $schema = implode("\n", $this->fields);
         $types = implode("\n\n", $this->types);
+
         return "$schema\n\n$types";
     }
 }

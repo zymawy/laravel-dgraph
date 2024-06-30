@@ -8,26 +8,33 @@ use Illuminate\Support\Facades\Log;
 use Zymawy\Dgraph\Api\Mutation;
 use Zymawy\Dgraph\Api\Operation;
 use Zymawy\Dgraph\Api\Query;
-use Zymawy\Dgraph\Responses\DgraphResponse;
-use Zymawy\Dgraph\Events\BeforeRequest;
-use Zymawy\Dgraph\Events\RequestInProgress;
 use Zymawy\Dgraph\Events\AfterRequest;
+use Zymawy\Dgraph\Events\BeforeRequest;
 use Zymawy\Dgraph\Events\RequestFailed;
-use Zymawy\Dgraph\Exceptions\DgraphException;
+use Zymawy\Dgraph\Events\RequestInProgress;
+use Zymawy\Dgraph\Responses\DgraphResponse;
 
 class DgraphClient
 {
     protected Client $client;
-    protected string $url;
-    protected int $startTs = 0;
-    protected array $keys = [];
-    protected array $preds = [];
-    protected ?string $accessToken = null;
-    protected ?string $refreshToken = null;
-    protected bool $autoRefresh = false;
-    protected ?int $autoRefreshTimer = null;
-    protected bool $debugMode = false; // Added debug mode flag
 
+    protected string $url;
+
+    protected int $startTs = 0;
+
+    protected array $keys = [];
+
+    protected array $preds = [];
+
+    protected ?string $accessToken = null;
+
+    protected ?string $refreshToken = null;
+
+    protected bool $autoRefresh = false;
+
+    protected ?int $autoRefreshTimer = null;
+
+    protected bool $debugMode = false; // Added debug mode flag
 
     public function __construct(string $url, array $options = [])
     {
@@ -36,22 +43,16 @@ class DgraphClient
         $this->beginTransaction(); // Automatically start a transaction when the client is instantiated
     }
 
-    /**
-     * @return array
-     */
     public function getKeys(): array
     {
         return $this->keys;
     }
 
-    /**
-     * @return array
-     */
     public function getPreds(): array
     {
         return $this->preds;
     }
-    
+
     public function beginTransaction(): void
     {
         $this->startTs = 0; // Start a new transaction with start_ts set to 0
@@ -72,7 +73,7 @@ class DgraphClient
         $headers = ['Content-Type' => 'application/json'];
         $body = ['query' => $query->build()];
 
-        if (!empty($vars)) {
+        if (! empty($vars)) {
             $body['variables'] = $vars;
         }
 
@@ -84,19 +85,20 @@ class DgraphClient
 
     public function mutate(Mutation $mutation, bool $commitNow = false): DgraphResponse
     {
-        $mutation->setDatum("start_ts", $this->startTs);
-        $response = $this->sendRequest('post', '/mutate?commitNow=' . ($commitNow ? 'true' : 'false'), [
+        $mutation->setDatum('start_ts', $this->startTs);
+        $response = $this->sendRequest('post', '/mutate?commitNow='.($commitNow ? 'true' : 'false'), [
             'body' => json_encode($mutation->build()),
             'headers' => ['Content-Type' => 'application/json'],
         ], 'mutate');
 
         $this->updateTransactionState($response->getData());
+
         return $response;
     }
 
     public function getHealth(bool $all = false): DgraphResponse
     {
-        return $this->sendRequest('get', '/health' . ($all ? '?all=true' : ''), [], 'health');
+        return $this->sendRequest('get', '/health'.($all ? '?all=true' : ''), [], 'health');
     }
 
     public function getState(): DgraphResponse
@@ -127,14 +129,16 @@ class DgraphClient
 
         return $response;
     }
+
     public function commit(): DgraphResponse
     {
         $mutation = [
             'commit' => true,
             'start_ts' => $this->startTs,
             'keys' => $this->keys,
-            'preds' => $this->preds
+            'preds' => $this->preds,
         ];
+
         return $this->sendRequest('post', '/commit', [
             'body' => json_encode($mutation),
             'headers' => ['Content-Type' => 'application/json'],
@@ -156,11 +160,12 @@ class DgraphClient
         } catch (RequestException $e) {
             $data = ['error' => $e->getMessage()];
             event(new RequestFailed($type, $data));
+
             return new DgraphResponse($data);
         }
         if ($this->debugMode) {
-            Log::debug("Response data: ", [
-                json_encode($response->getData())
+            Log::debug('Response data: ', [
+                json_encode($response->getData()),
             ]);
         }
 
@@ -195,7 +200,7 @@ class DgraphClient
 
     private function maybeStartRefreshTimer(?string $accessToken): void
     {
-        if (!$accessToken || !$this->autoRefresh) {
+        if (! $accessToken || ! $this->autoRefresh) {
             return;
         }
         $this->cancelRefreshTimer();

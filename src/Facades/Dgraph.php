@@ -7,6 +7,7 @@ use Zymawy\Dgraph\Contracts\ApiContract;
 
 /**
  * @see \Zymawy\Dgraph\Dgraph
+ *
  * @mixin \Zymawy\Dgraph\Dgraph
  * @mixin ApiContract
  */

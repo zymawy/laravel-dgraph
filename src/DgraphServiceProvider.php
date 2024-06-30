@@ -11,7 +11,7 @@ class DgraphServiceProvider extends PackageServiceProvider
     public function registeringPackage()
     {
         $this->app->singleton(DgraphClient::class, function ($app) {
-            return new DgraphClient(config('dgraph.host').':'. config('dgraph.port'));
+            return new DgraphClient(config('dgraph.host').':'.config('dgraph.port'));
         });
 
         $this->app->singleton('dgraph', function ($app) {

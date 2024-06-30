@@ -1,4 +1,5 @@
 <?php
+
 namespace Zymawy\Dgraph\Contracts;
 
 interface ApiContract

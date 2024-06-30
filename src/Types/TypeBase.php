@@ -1,14 +1,17 @@
 <?php
+
 namespace Zymawy\Dgraph\Types;
+
 use Zymawy\Dgraph\Contracts\TypeContract;
 
 abstract class TypeBase implements TypeContract
 {
     protected array $directives = [];
-    
+
     public function __toString(): string
     {
         $indexString = $this->getDirectiveString();
+
         return "{$this->name}{$indexString}";
     }
 
@@ -26,6 +29,7 @@ abstract class TypeBase implements TypeContract
                     return true;
                 }
             }
+
             return false;
         });
 
@@ -34,6 +38,7 @@ abstract class TypeBase implements TypeContract
         }
 
         $directivesString = implode(' ', $directives);
+
         return " $directivesString";
     }
 }

@@ -1,7 +1,5 @@
 <?php
+
 namespace Zymawy\Dgraph\Exceptions;
 
-class DgraphException extends \Exception
-{
-
-}
+class DgraphException extends \Exception {}
