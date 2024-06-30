@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Zymawy\Dgraph\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class DgraphCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'dgraph';
 
     public $description = 'My command';
 
